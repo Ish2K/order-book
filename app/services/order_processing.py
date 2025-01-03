@@ -21,7 +21,7 @@ async def place_order(order: Order):
     return JSONResponse(content={"status": "success", "order_id": order_id})
 
 # this could be modified using priority queues or hashing
-async def modify_order(order_id: str, new_quantity: float):
+async def modify_order(order_id: str, new_price: float):
     
     # fetch the order from mongodb
     order = mongo_order_collection.find_one({"order_id": order_id})
@@ -29,8 +29,7 @@ async def modify_order(order_id: str, new_quantity: float):
         return JSONResponse(content={"status": "error", "message": "Order not found"})
 
     order = Order(**order)
-    order.quantity = new_quantity
-    order.remaining_quantity = new_quantity
+    order.price = new_price
     order = order.model_dump_json()
     order = json.loads(order)
     mongo_order_collection.update_one({"order_id": order_id}, {"$set": order})
@@ -55,9 +54,9 @@ async def cancel_order(order_id: str):
 async def get_order(order_id: str):
     
     # fetch the order from mongodb
-    order = mongo_order_collection.find_one({"order_id": order_id, "is_alive": True})
+    order = mongo_order_collection.find_one({"order_id": order_id})
     if order is None:
-        return JSONResponse(content={"status": "error", "message": "Order does not exist or has been cancelled/filled"})
+        return JSONResponse(content={"status": "error", "message": "Order does not exist"})
     
     order = Order(**order)
     return order

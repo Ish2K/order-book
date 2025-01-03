@@ -5,7 +5,6 @@ from app.services.order_book import reset_session
 from app.models.order import Order
 import uuid
 
-
 router = APIRouter()
 
 @router.post("/place")
@@ -41,9 +40,9 @@ async def all_orders():
 @router.put("/modify")
 async def modify_order_endpoint(
     order_id: str = Form(...),  # Expect order_id as form parameter
-    new_quantity: float = Form(...),  # Expect new_quantity as form parameter
+    new_price: float = Form(...),  # Expect new_quantity as form parameter
 ):
-    result = await modify_order(order_id, new_quantity)
+    result = await modify_order(order_id, new_price)
     return result
 
 @router.delete("/cancel")

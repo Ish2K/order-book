@@ -3,26 +3,151 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Order Form</title>
+  <title>Order Management App</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <form id="order-form">
-    <label for="quantity">Quantity:</label>
-    <input type="number" id="quantity" name="quantity" min="1" required>
-    <br>
-    <label for="price">Price:</label>
-    <input type="number" id="price" name="price" step="0.01" min="0.01" required>
-    <br>
-    <label for="side">Side:</label>
-    <select id="side" name="side" required>
-      <option value="1">Buy</option>
-      <option value="-1">Sell</option>
-    </select>
-    <br>
-    <button type="submit">Place Order</button>
-  </form>
+  <h1>Order Management App</h1>
 
-  <div id="response"></div>
+  <!-- Placing an Order -->
+  <div id="place-order-section">
+    <h2>Place Order</h2>
+    <form id="place-order-form">
+      <label for="side">Side (1 for Buy, -1 for Sell):</label>
+      <input type="number" id="side" name="side" required><br>
+
+      <label for="price">Price:</label>
+      <input type="number" id="price" name="price" step="0.01" required><br>
+
+      <label for="quantity">Quantity:</label>
+      <input type="number" id="quantity" name="quantity" required><br>
+
+      <button type="submit">Place Order</button>
+    </form>
+    <div id="place-order-result"></div>
+  </div>
+
+  <!-- Modify Order -->
+  <div id="modify-order-section">
+    <h2>Modify Order</h2>
+    <form id="modify-order-form">
+      <label for="order-id">Order ID:</label>
+      <input type="text" id="order-id-modify" name="order-id" required><br>
+
+      <label for="updated-price">Updated Price:</label>
+      <input type="number" id="updated-price" name="updated-price" step="0.01" required><br>
+
+      <button type="submit">Modify Order</button>
+    </form>
+    <div id="modify-order-result"></div>
+  </div>
+
+  <!-- Cancel Order -->
+  <div id="cancel-order-section">
+    <h2>Cancel Order</h2>
+    <form id="cancel-order-form">
+      <label for="order-id">Order ID:</label>
+      <input type="text" id="order-id-cancel" name="order-id" required><br>
+
+      <button type="submit">Cancel Order</button>
+    </form>
+    <div id="cancel-order-result"></div>
+  </div>
+
+  <!-- Fetch Order Info -->
+  <div id="fetch-order-section">
+    <h2>Fetch Order Info</h2>
+    <form id="fetch-order-form">
+      <label for="order-id">Order ID:</label>
+      <input type="text" id="order-id-fetch" name="order-id" required><br>
+
+      <button type="submit">Get Order Info</button>
+    </form>
+    <div id="fetch-order-result"></div>
+  </div>
+
+  <!-- Fetch All Orders -->
+  <div id="fetch-all-orders-section">
+    <h2>All Orders</h2>
+    <button id="fetch-all-orders-btn">Fetch All Orders</button>
+    <table id="all-orders-table">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Side</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Traded Quantity</th>
+          <th>Average Traded Price</th>
+          <th>Remaining Quantity</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- Real-Time WebSocket Messages -->
+  <div id="websocket-section">
+    <h2>Real-Time Updates</h2>
+
+    <!-- Trades Table -->
+    <div id="trades">
+      <h3>Trades</h3>
+      <table id="trades-table">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>Trade ID</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Buy Order ID</th>
+            <th>Sell Order ID</th>
+          </tr>
+        </thead>
+        <tbody id="trades-table-body"></tbody>
+      </table>
+      
+    </div>
+
+    <!-- Order Book -->
+    <div id="orderbook-messages">
+      <h3>Order Book</h3>
+      <div>
+        <h4>Bid Orders</h4>
+        <table id="bid-table">
+          <thead>
+            <tr>
+              <th>Order Id</th>
+              <th>Price</th>
+              <th>Quantity</th>
+            </tr>
+          </thead>
+          <tbody id="bid-table-body"></tbody>
+        </table>
+      </div>
+      <div>
+        <h4>Ask Orders</h4>
+        <table id="ask-table">
+          <thead>
+            <tr>
+              <th>Order Id</th>
+              <th>Price</th>
+              <th>Quantity</th>
+            </tr>
+          </thead>
+          <tbody id="ask-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reset Session -->
+  <div id="reset-session-section">
+    <h2>Reset Session</h2>
+    <button id="reset-session-btn">Reset Session</button>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
