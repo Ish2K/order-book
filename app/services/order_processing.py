@@ -1,96 +1,63 @@
 import json
-from app.db.redis_client import redis_client
 from app.db.mongodb_client import mongo_order_collection
-from app.models.order import Order, OrderBook
-from app.service.order_book import align_order_book
+from app.models.order import Order
 from app.services.snapshots import get_order_book_snapshot
 from fastapi.responses import JSONResponse
+from app.services.order_book import match_orders
 
 async def place_order(order: Order):
 
+    order_id = order.order_id
+    order.remaining_quantity = order.quantity
     # fetch current order book from redis
     order_book = await get_order_book_snapshot()
     # add the new order to the order book
-    if order.side == 1:
-        order_book.bid.append(order)
-    elif order.side == -1:
-        order_book.ask.append(order)
-    
-    order_id = order.order_id
-
-    # serialize the order book
-    order_book = order_book.model_dump_json()
-
-    # store the order book in redis
-    await redis_client.set('order_book', order_book)
-    await align_order_book()
-    
-    # store the order in mongodb
     order = order.model_dump_json()
     order = json.loads(order)
     
     mongo_order_collection.insert_one(order)
+    await match_orders()
     
     return JSONResponse(content={"status": "success", "order_id": order_id})
 
 # this could be modified using priority queues or hashing
 async def modify_order(order_id: str, new_quantity: float):
     
-    order_book = await get_order_book_snapshot()
-    found = False
-    for order in order_book.bid:
-        if order.order_id == order_id:
-            order.quantity = new_quantity
-            found = True
-            break
-
-    if not found:
-        for order in order_book.ask:
-            if order.order_id == order_id:
-                order.quantity = new_quantity
-                found = True
-                break
-    
-    if(not found):
+    # fetch the order from mongodb
+    order = mongo_order_collection.find_one({"order_id": order_id})
+    if order is None:
         return JSONResponse(content={"status": "error", "message": "Order not found"})
 
-    order_book = order_book.model_dump_json()
-    await redis_client.set('order_book', order_book)
-    await align_order_book()
+    order = Order(**order)
+    order.quantity = new_quantity
+    order.remaining_quantity = new_quantity
+    order = order.model_dump_json()
+    order = json.loads(order)
+    mongo_order_collection.update_one({"order_id": order_id}, {"$set": order})
 
     return JSONResponse(content={"status": "success", "order_id": order_id})
 
 async def cancel_order(order_id: str):
     
-    order_book = await get_order_book_snapshot()
-    found = False
-    for order in order_book.bid:
-        if order.order_id == order_id:
-            order_book.bid.remove(order)
-            found = True
-            break
-
-    if not found:
-        for order in order_book.ask:
-            if order.order_id == order_id:
-                order_book.ask.remove(order)
-                break
-    
-    if(not found):
+    # fetch the order from mongodb
+    order = mongo_order_collection.find_one({"order_id": order_id})
+    if order is None:
         return JSONResponse(content={"status": "error", "message": "Order not found"})
-
-    order_book = order_book.model_dump_json()
-    await redis_client.set('order_book', order_book)
-    await align_order_book()
-
+    
+    order = Order(**order)
+    order.is_alive = False
+    order = order.model_dump_json()
+    order = json.loads(order)
+    mongo_order_collection.update_one({"order_id": order_id}, {"$set": order})
+    
     return JSONResponse(content={"status": "success", "order_id": order_id})
 
 async def get_order(order_id: str):
     
     # fetch the order from mongodb
-    order = mongo_order_collection.find_one({"order_id": order_id})
+    order = mongo_order_collection.find_one({"order_id": order_id, "is_alive": True})
     if order is None:
-        return JSONResponse(content={"status": "error", "message": "Order not found"})
+        return JSONResponse(content={"status": "error", "message": "Order does not exist or has been cancelled/filled"})
     
     order = Order(**order)
     return order

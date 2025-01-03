@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Form
 from app.services.order_processing import place_order, get_order_book_snapshot
 from app.services.order_processing import modify_order, cancel_order, get_order, get_all_orders
-from pydantic import BaseModel
+from app.services.order_book import reset_session
 from app.models.order import Order
 import uuid
 
@@ -51,4 +51,9 @@ async def cancel_order_endpoint(
     order_id: str = Form(...),  # Expect order_id as form parameter
 ):
     result = await cancel_order(order_id)
+    return result
+
+@router.post("/reset")
+async def reset_current_session():
+    result = await reset_session()
     return result

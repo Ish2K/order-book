@@ -9,6 +9,7 @@ class Order(BaseModel):
     is_alive: bool = True
     traded_quantity: float = 0
     average_traded_price: float = 0
+    remaining_quantity: float = 0
 
 class Trade(BaseModel):
     trade_id: str
