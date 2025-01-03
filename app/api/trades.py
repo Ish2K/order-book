@@ -4,7 +4,7 @@ from app.models.order import Trade
 
 router = APIRouter()
 
-@router.get("/all_trades")
+@router.get("/all")
 async def all_trades():
-    trades = await mongo_client.db["trades"].find().to_list(100)
+    trades = []
     return trades
