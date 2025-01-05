@@ -115,5 +115,5 @@ this project better
 ### 4. **Refering to Deliverables point 5**
   - The app state is backed up in mongoDB, we can make multiple db instances to store the current state (by scaling).
     Currently, if the application stops and the docker containers are not deleted, the app would start from
-    the last updated state
+    the last saved state
 
