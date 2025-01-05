@@ -14,7 +14,7 @@ This repository contains a Limit Order Book built using **FastAPI**, with **Mong
 - **Order Management**: Place, modify, and cancel orders.
 - **Trade Matching**: Match buy and sell orders, execute trades, and commit them to the database.
 - **Real-Time Updates**: Communicate order and trade data via WebSocket.
-- **Data Snapshots**: Generate real-time snapshots of the order book and trade history.
+- **Data Snapshots**: Generate real-time snapshots of the order book (top 5 bids and asks)
 
 ## Architecture
 
