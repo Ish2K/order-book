@@ -93,3 +93,7 @@ docker-compose up --build
   - Access the application at `localhost:8000`
   - Interact with each section based on the pdf provided
 
+### 4. **Shut down the application**
+  
+  - Use docker-compose down to delete every service
+
