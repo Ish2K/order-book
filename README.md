@@ -6,7 +6,7 @@ This repository contains a Limit Order Book built using **FastAPI**, with **Mong
 
 ### Key Components
 1. **Order Service**: Manages order placement, modification, and cancellation. It communicates with the order book and updates MongoDB with order details.
-2. **Trade Service**: Handles the matching of buy and sell orders, executes trades, and records the trade details.
+2. **Trade Service**: Handles the fetching of all trades
 3. **Snapshot Service**: Generates and serves snapshots of the current order book and the trade history.
 4. **WebSocket Service**: Provides real-time updates on order and trade status over WebSocket connections.
 
