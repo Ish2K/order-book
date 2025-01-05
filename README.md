@@ -27,9 +27,7 @@ The application is broken down into microservices, each of which is responsible 
    - It triggers the matching service to check if the orders can be matched.
   
 2. **Trade Microservice** (`/trades`):
-   - Handles the execution of trades when matching buy and sell orders.
-   - It commits completed trades to MongoDB for persistence.
-   - It interacts with the Order service to modify orders when they are matched and executed.
+   - Helps in fetching the trade history
 
 3. **Snapshot Microservice** (`/snapshots`):
    - Provides snapshots of the current state of the order book and trade history.
@@ -80,3 +78,4 @@ The application is broken down into microservices, each of which is responsible 
 ```bash
 git clone <repository_url>
 cd <repository_directory>
+```
