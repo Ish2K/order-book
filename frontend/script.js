@@ -1,4 +1,5 @@
 const baseURL = "http://localhost:8000";
+const webSocketBaseURL = "ws://localhost:8000/ws";
 
 // Place Order
 document.getElementById("place-order-form").addEventListener("submit", async (e) => {
@@ -21,18 +22,32 @@ document.getElementById("place-order-form").addEventListener("submit", async (e)
 // Modify Order
 document.getElementById("modify-order-form").addEventListener("submit", async (e) => {
   e.preventDefault();
+  
   const order_id = document.getElementById("order-id-modify").value;
-  const updated_price = parseFloat(document.getElementById("updated-price").value);
+  const new_price = parseFloat(document.getElementById("updated-price").value);
 
-  const params = new URLSearchParams({ order_id, updated_price });
-  const response = await fetch(`${baseURL}/orders/modify`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: params.toString(),
-  });
+  // Ensure proper URLSearchParams formatting
+  const params = new URLSearchParams({ order_id, new_price });
 
-  const result = await response.json();
-  document.getElementById("modify-order-result").textContent = JSON.stringify(result);
+  try {
+    const response = await fetch(`${baseURL}/orders/modify`, {
+      method: "PUT",
+      headers: {
+        "accept": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: params.toString(),
+    });
+
+    // Parse JSON response
+    const result = await response.json();
+
+    // Display result
+    document.getElementById("modify-order-result").textContent = JSON.stringify(result, null, 2);
+  } catch (error) {
+    console.error("Error modifying order:", error);
+    document.getElementById("modify-order-result").textContent = "An error occurred while modifying the order.";
+  }
 });
 
 // Cancel Order
@@ -95,7 +110,7 @@ document.getElementById("fetch-all-orders-btn").addEventListener("click", async 
 });
 
 // WebSocket for Trades
-const tradesSocket = new WebSocket("ws://localhost:8000/ws/trades");
+const tradesSocket = new WebSocket(`${webSocketBaseURL}/trades`);
 tradesSocket.onmessage = (event) => {
   
   const tradeData = JSON.parse(event.data); // Assuming the trade data is JSON
@@ -120,7 +135,7 @@ tradesSocket.onmessage = (event) => {
 };
 
 // WebSocket for Order Book
-const orderBookSocket = new WebSocket("ws://localhost:8000/ws/orderbook");
+const orderBookSocket = new WebSocket(`${webSocketBaseURL}/orderbook`);
 orderBookSocket.onmessage = (event) => {
   
   // console.log(event.data);
@@ -148,7 +163,7 @@ orderBookSocket.onmessage = (event) => {
     const row = `<tr>
       <td>${order.order_id}</td>
       <td>${order.price}</td>
-      <td>${order.quantity}</td>
+      <td>${order.remaining_quantity}</td>
     </tr>`;
     document.getElementById("bid-table-body").innerHTML += row;
   });
@@ -158,7 +173,7 @@ orderBookSocket.onmessage = (event) => {
     const row = `<tr>
       <td>${order.order_id}</td>
       <td>${order.price}</td>
-      <td>${order.quantity}</td>
+      <td>${order.remaining_quantity}</td>
     </tr>`;
     document.getElementById("ask-table-body").innerHTML += row;
   });

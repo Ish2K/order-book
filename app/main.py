@@ -1,3 +1,25 @@
+"""
+Main entry point for the FastAPI application.
+
+This module sets up and configures the FastAPI application, including the routing 
+for orders, trades, and websockets. It also serves static files (HTML, CSS, JS) 
+from the frontend directory at the root URL.
+
+Key functionalities:
+- Includes routers for the `/orders`, `/trades`, and `/ws` endpoints, which handle
+  order management, trade processing, and websocket communications respectively.
+- Serves static files such as HTML, CSS, and JS for the frontend application from 
+  the `frontend` directory.
+
+Dependencies:
+- fastapi: The FastAPI framework for building the web API.
+- app.api: Includes routers for orders, trades, and websockets.
+
+Example usage:
+    To run the FastAPI app:
+    uvicorn app.main:app --reload
+"""
+
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from app.api import orders, trades, websockets

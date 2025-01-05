@@ -6,7 +6,16 @@ router = APIRouter()
 
 # WebSocket endpoint to stream the order book every 5 seconds
 @router.websocket("/orderbook")
-async def websocket_endpoint(websocket: WebSocket):
+async def websocket_endpoint(websocket: WebSocket) -> None:
+    """
+    WebSocket endpoint to stream the order book every 5 seconds.
+
+    Parameters:
+    - websocket (WebSocket): The WebSocket connection instance.
+
+    Returns:
+    - None
+    """
     await websocket.accept()
 
     try:
@@ -25,7 +34,16 @@ async def websocket_endpoint(websocket: WebSocket):
 
 # WebSocket endpoint to listen for trades updates
 @router.websocket("/trades")
-async def websocket_trades_endpoint(websocket: WebSocket):
+async def websocket_trades_endpoint(websocket: WebSocket) -> None:
+    """
+    WebSocket endpoint to listen for trades updates.
+
+    Parameters:
+    - websocket (WebSocket): The WebSocket connection instance.
+
+    Returns:
+    - None
+    """
     await websocket.accept()
 
     try:
@@ -33,7 +51,7 @@ async def websocket_trades_endpoint(websocket: WebSocket):
         while True:
             trades = await get_trades()  # A function that fetches the current trades
                 
-            # Send the order book as a JSON object to the client
+            # Send the trades as a JSON object to the client
             if current_trades_size != len(trades):
                 current_trades_size = len(trades)
                 
