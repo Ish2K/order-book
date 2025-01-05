@@ -79,3 +79,9 @@ The application is broken down into microservices, each of which is responsible 
 git clone <repository_url>
 cd <repository_directory>
 ```
+### 2. **Run Docker Command**
+```bash
+docker-compose up --build
+```
+
+
