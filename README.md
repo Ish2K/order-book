@@ -97,3 +97,23 @@ docker-compose up --build
   
   - Use `docker-compose down` to delete every service
 
+## Possible improvements
+
+Although each service is working fine, here are few additional steps that we can take to make
+this project better
+
+### 1. **Better matching algorithm**
+  - As of now, we using sequential matching using queues. Maybe heaps or priority queue are a better data structure to match orders. It may require some thought on how to implement that
+
+### 2. **Better Frontend**
+  - More user friendly frontend would be nice, maybe we can use react to make frontend better.
+
+### 3. **Adding Test Cases**
+  - We could use Pytest to check each endpoint's functionality and add that process in github workflow.
+  This will help greatly in collaborative project development. 
+
+### 4. **Refering to Deliverables point 5**
+  - The is backed up in mongoDB, we can make multiple db instances to store the current state (by scaling).
+    Currently, if the application stops and the docker containers are not deleted, the app would start from
+    the last updated state
+
