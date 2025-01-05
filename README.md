@@ -95,5 +95,5 @@ docker-compose up --build
 
 ### 4. **Shut down the application**
   
-  - Use docker-compose down to delete every service
+  - Use `docker-compose down` to delete every service
 
