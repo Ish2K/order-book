@@ -80,8 +80,8 @@ The application is broken down into microservices, each of which is responsible 
 
 ### 1. **Clone the Repository**
 ```bash
-git clone <repository_url>
-cd <repository_directory>
+git clone https://github.com/Ish2K/order-book.git
+cd order-book
 ```
 ### 2. **Run Docker Command**
 ```bash
