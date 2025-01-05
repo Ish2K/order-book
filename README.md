@@ -36,6 +36,10 @@ The application is broken down into microservices, each of which is responsible 
 4. **WebSocket Microservice** (`/ws`):
    - Provides real-time updates of order status, trade execution, and order book updates through WebSocket communication.
 
+5. **Reset Session** (`/orders/reset`)
+   - This is remove all the data from the database and prepare a fresh orderbook session
+
+
 ## Design Decisions
 
 1. **Microservices Architecture**:
@@ -84,4 +88,8 @@ cd <repository_directory>
 docker-compose up --build
 ```
 
+### 3. **Interact with Frontend**
+
+  - Access the application at `localhost:8000`
+  - Interact with each section based on the pdf provided
 
