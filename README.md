@@ -2,88 +2,93 @@
 
 ## Overview
 
-This repository contains a Limit Order Book built using **FastAPI**, with **MongoDB** as the database and **Docker** to containerize the application. The application handles order management, trade processing, and provides real-time updates via WebSocket communication. It is designed in a **microservices architecture** to ensure modularity, scalability, and maintainability.
+This repository implements a **Limit Order Book** using **FastAPI**, with **MongoDB** as the database and **Docker** to containerize the application. It efficiently handles order management, trade execution, and real-time updates via **WebSocket communication**. Built on a **microservices architecture**, the system is modular, scalable, and maintainable.
 
-### Key Components
-1. **Order Service**: Manages order placement, modification, and cancellation. It communicates with the order book and updates MongoDB with order details.
-2. **Trade Service**: Handles the fetching of all trades
-3. **Snapshot Service**: Generates and serves snapshots of the current order book and the trade history.
-4. **WebSocket Service**: Provides real-time updates on order and trade status over WebSocket connections.
+---
 
-### Functionalities:
+## Key Components
+
+1. **Order Service**: Manages order placement, modification, and cancellation, updates MongoDB with order details, and interfaces with the matching engine.
+2. **Trade Service**: Handles trade execution and fetching of trade history.
+3. **Snapshot Service**: Generates and serves snapshots of the current order book and trade history.
+4. **WebSocket Service**: Streams real-time updates of orders, trades, and order book changes.
+
+---
+
+## Features
+
 - **Order Management**: Place, modify, and cancel orders.
-- **Trade Matching**: Match buy and sell orders, execute trades, and commit them to the database.
-- **Real-Time Updates**: Communicate order and trade data via WebSocket.
-- **Data Snapshots**: Generate real-time snapshots of the order book (top 5 bids and asks)
+- **Trade Matching**: Match buy and sell orders, execute trades, and update the database.
+- **Real-Time Updates**: Provide instant feedback on order and trade status using WebSockets.
+- **Order Book Snapshots**: Fetch real-time snapshots of the top 5 bids and asks.
+
+---
 
 ## Architecture
 
-The application is broken down into microservices, each of which is responsible for a specific set of operations. Each service operates independently and communicates with other services through APIs.
+The application is divided into microservices, each with a dedicated responsibility, enabling independent operation and inter-service communication via REST APIs and WebSockets.
 
-### Microservices Breakdown:
+### Microservices Breakdown
 
-`BASE_URL=localhost:8000`
-`WEBSOCKET_BASE_URL=ws://localhost:8000/ws`
+| Service            | Endpoint                  | Description                                                                                  |
+|--------------------|--------------------------|----------------------------------------------------------------------------------------------|
+| **Order**          | `/orders`                | Handles order placement (`/place`), modification (`/modify`), and cancellation (`/cancel`).  |
+| **Trade**          | `/trades`                | Fetches trade history.                                                                       |
+| **Snapshot**       | `/orders/order_book_snapshot` | Provides the current order book and trade history snapshots.                                 |
+| **WebSocket**      | `/ws`                    | Streams real-time updates:                                                                  |
+|                    |                          | - `/ws/orderbook`: Top 5 bid-ask orders.                                                    |
+|                    |                          | - `/ws/trades`: Realtime trade events.                                                      |
+| **Reset Session**  | `/orders/reset`          | Resets the database and starts a fresh order book session.                                   |
 
-You can access `/docs` for Swagger UI or just use the services from landing page at 
-`localhost:8000/` (Refer to the steps below to spin up the project) 
+---
 
-1. **Order Microservice** (`/orders`): 
-   - Responsible for accepting (`/orders/place`), modifying(`/orders/modify`), and canceling orders (`/orders/cancel`).
-   - Interfaces with MongoDB to store and retrieve orders.
-   - It triggers the matching service to check if the orders can be matched.
-  
-2. **Trade Microservice** (`/trades`):
-   - Helps in fetching the trade history
+### URLs for Interaction
 
-3. **Snapshot Microservice** (`/orders/order_book_snapshot`):
-   - Provides snapshots of the current state of the order book and trade history.
-   - It fetches the current state of the order book and recent trades from MongoDB.
+- **Swagger UI**: `http://localhost:8000/docs`
+- **Landing Page**: `http://localhost:8000/`
+- **Base API URL**: `http://localhost:8000`
+- **WebSocket URL**: `ws://localhost:8000/ws`
 
-4. **WebSocket Microservice** (`/ws`):
-   - Provides real-time updates of order status, trade execution, and order book updates through WebSocket communication.
-   - `/ws/orderbook` can be used to stream top 5 bid-ask orders
-   - `/ws/trades` can be used to stream realtime trade events
-
-5. **Reset Session** (`/orders/reset`)
-   - This will remove all the data from the database and prepare a fresh orderbook session
-
+---
 
 ## Design Decisions
 
-1. **Microservices Architecture**:
-   - The system is designed using microservices to allow for better scalability, easier maintenance, and isolation of functionality.
-   - Each service is independent, allowing for asynchronous processing where possible, and efficient data flow through REST APIs and WebSockets.
+1. **Microservices Architecture**: 
+   - Ensures modularity, scalability, and ease of maintenance.
+   - Supports independent operation and asynchronous processing for efficiency.
    
 2. **FastAPI**:
-   - FastAPI is chosen for its high performance and ease of use in building REST APIs. It supports asynchronous programming, which is crucial for handling I/O-bound operations like order and trade matching.
+   - High-performance framework for building REST APIs with support for asynchronous operations.
    
 3. **MongoDB**:
-   - MongoDB is used for its flexible schema and scalability. Orders, trades, and snapshots are stored as documents, making it easy to query and update the system in real time.
+   - Flexible and scalable NoSQL database for storing orders, trades, and snapshots.
    
 4. **WebSockets**:
-   - WebSockets are used for real-time communication, allowing the system to push updates to connected clients without the need for constant polling.
-
+   - Used for real-time communication, reducing client polling overhead.
+   
 5. **Docker**:
-   - Docker is used to containerize the application, making it easier to deploy and scale. Each microservice runs in its own container, and the database is also containerized to maintain consistency across environments.
+   - Containerizes the application for consistent deployment across environments.
+
+---
 
 ## Data Flow
 
 1. **Order Placement**:
-   - A user places an order via the `/orders` endpoint.
-   - The order is added to MongoDB.
-   - The system checks if the order can be matched with existing orders in the order book.
-   - If a match is found, a trade is executed, and both orders are updated.
+   - Users place orders via `/orders`.
+   - Orders are stored in MongoDB and matched with existing orders in the book.
+   - If matched, a trade is executed and updates are made to both orders.
 
 2. **Trade Execution**:
-   - When a match is found, a trade is executed, and a new `Trade` document is created in MongoDB.
-   - The matched orders are updated with the traded quantity and price.
+   - Matches trigger trade creation in MongoDB.
+   - The order book is updated with the trade details.
 
-3. **Order Book Snapshot**:
-   - Users can fetch the current order book using the `/orders/order_book_snapshot` endpoint. This will return the top 5 bids and asks, sorted by price.
+3. **Order Book Snapshots**:
+   - The `/orders/order_book_snapshot` endpoint provides real-time snapshots of the top 5 bids and asks.
 
 4. **Real-Time Updates**:
-   - WebSockets push updates to the client regarding order status, trades, and order book changes.
+   - WebSocket services stream updates for order status, trade events, and order book changes.
+
+---
 
 ## Running the Application with Docker
 
