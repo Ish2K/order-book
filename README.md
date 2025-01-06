@@ -24,6 +24,8 @@ The application is broken down into microservices, each of which is responsible 
 
 `BASE_URL=localhost:8000`
 
+You can access `/docs` for Swagger UI
+
 1. **Order Microservice** (`/orders`): 
    - Responsible for accepting, modifying, and canceling orders.
    - Interfaces with MongoDB to store and retrieve orders.
