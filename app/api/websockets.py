@@ -6,7 +6,7 @@ router = APIRouter()
 
 # WebSocket endpoint to stream the order book every 5 seconds
 @router.websocket("/orderbook")
-async def websocket_endpoint(websocket: WebSocket) -> None:
+async def websocket_endpoint(websocket: WebSocket):
     """
     WebSocket endpoint to stream the order book every 5 seconds.
 
@@ -34,7 +34,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
 
 # WebSocket endpoint to listen for trades updates
 @router.websocket("/trades")
-async def websocket_trades_endpoint(websocket: WebSocket) -> None:
+async def websocket_trades_endpoint(websocket: WebSocket):
     """
     WebSocket endpoint to listen for trades updates.
 

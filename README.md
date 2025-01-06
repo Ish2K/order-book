@@ -21,6 +21,9 @@ This repository contains a Limit Order Book built using **FastAPI**, with **Mong
 The application is broken down into microservices, each of which is responsible for a specific set of operations. Each service operates independently and communicates with other services through APIs.
 
 ### Microservices Breakdown:
+
+`BASE_URL=localhost:8000`
+
 1. **Order Microservice** (`/orders`): 
    - Responsible for accepting, modifying, and canceling orders.
    - Interfaces with MongoDB to store and retrieve orders.
@@ -35,6 +38,8 @@ The application is broken down into microservices, each of which is responsible 
 
 4. **WebSocket Microservice** (`/ws`):
    - Provides real-time updates of order status, trade execution, and order book updates through WebSocket communication.
+   - `/ws/orderbook` can be used to stream top 5 bid-ask orders
+   - `/ws/trades` can be used to stream realtime trade events
 
 5. **Reset Session** (`/orders/reset`)
    - This will remove all the data from the database and prepare a fresh orderbook session

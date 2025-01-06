@@ -3,8 +3,8 @@ from app.services.snapshots import get_trades
 
 router = APIRouter()
 
-@router.get("/all")
-async def all_trades() -> list:
+@router.get("/all", response_model = list)
+async def all_trades():
     """
     Retrieve all trade records.
 

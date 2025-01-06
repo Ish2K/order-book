@@ -22,8 +22,9 @@ from app.models.order import Order
 from app.services.snapshots import get_order_book_snapshot
 from fastapi.responses import JSONResponse
 from app.services.order_book import match_orders
+from typing import Union
 
-async def place_order(order: Order) -> JSONResponse:
+async def place_order(order: Order) -> dict:
     """
     Places a new order by adding it to the order book and triggering the order matching process.
 
@@ -34,7 +35,7 @@ async def place_order(order: Order) -> JSONResponse:
         order (Order): The order to be placed.
 
     Returns:
-        JSONResponse: A JSON response indicating the success of the order placement, along with the order ID.
+        dict: A JSON response indicating the success of the order placement, along with the order ID.
     """
     order_id = order.order_id
     order.remaining_quantity = order.quantity
@@ -49,7 +50,7 @@ async def place_order(order: Order) -> JSONResponse:
     
     return JSONResponse(content={"status": "success", "order_id": order_id})
 
-async def modify_order(order_id: str, new_price: float) -> JSONResponse:
+async def modify_order(order_id: str, new_price: float) -> dict:
     """
     Modifies the price of an existing order and triggers the order matching process.
 
@@ -61,7 +62,7 @@ async def modify_order(order_id: str, new_price: float) -> JSONResponse:
         new_price (float): The new price for the order.
 
     Returns:
-        JSONResponse: A JSON response indicating the success of the modification, along with the order ID.
+        dict: A JSON response indicating the success of the modification, along with the order ID.
     """
     # fetch the order from mongodb
     order = mongo_order_collection.find_one({"order_id": order_id})
@@ -77,7 +78,7 @@ async def modify_order(order_id: str, new_price: float) -> JSONResponse:
 
     return JSONResponse(content={"status": "success", "order_id": order_id})
 
-async def cancel_order(order_id: str) -> JSONResponse:
+async def cancel_order(order_id: str) -> dict:
     """
     Cancels an existing order by marking it as inactive in the database.
 
@@ -87,7 +88,7 @@ async def cancel_order(order_id: str) -> JSONResponse:
         order_id (str): The ID of the order to be canceled.
 
     Returns:
-        JSONResponse: A JSON response indicating the success of the cancellation, along with the order ID.
+        dict: A JSON response indicating the success of the cancellation, along with the order ID.
     """
     # fetch the order from mongodb
     order = mongo_order_collection.find_one({"order_id": order_id})
@@ -102,7 +103,7 @@ async def cancel_order(order_id: str) -> JSONResponse:
     
     return JSONResponse(content={"status": "success", "order_id": order_id})
 
-async def get_order(order_id: str) -> Order | JSONResponse:
+async def get_order(order_id: str) -> Union[Order, dict]:
     """
     Retrieves an order by its ID from the database.
 
@@ -112,7 +113,7 @@ async def get_order(order_id: str) -> Order | JSONResponse:
         order_id (str): The ID of the order to retrieve.
 
     Returns:
-        Order or JSONResponse: The retrieved order if found, or an error response if not.
+        Order or dict: The retrieved order if found, or an error response if not.
     """
     # fetch the order from mongodb
     order = mongo_order_collection.find_one({"order_id": order_id})
@@ -122,14 +123,14 @@ async def get_order(order_id: str) -> Order | JSONResponse:
     order = Order(**order)
     return order
 
-async def get_all_orders() -> list[Order] | JSONResponse:
+async def get_all_orders() -> Union[list[Order], dict]:
     """
     Retrieves all orders from the database.
 
     This function returns a list of all orders in the database or a JSON error response if no orders are found.
 
     Returns:
-        list[Order] or JSONResponse: A list of all orders if found, or an error response if no orders exist.
+        list[Order] or dict: A list of all orders if found, or an error response if no orders exist.
     """
     # fetch all orders from mongodb
     orders = mongo_order_collection.find({})
