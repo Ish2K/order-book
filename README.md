@@ -34,7 +34,7 @@ The application is divided into microservices, each with a dedicated responsibil
 |--------------------|--------------------------|----------------------------------------------------------------------------------------------|
 | **Order**          | `/orders`                | Handles order placement (`/place`), modification (`/modify`), and cancellation (`/cancel`).  |
 | **Trade**          | `/trades`                | Fetches trade history.                                                                       |
-| **Snapshot**       | `/orders/order_book_snapshot` | Provides the current order book and trade history snapshots.                                 |
+| **Snapshot**       | `/orders/order_book_snapshot` | Provides the current order book snapshot.                                 |
 | **WebSocket**      | `/ws`                    | Streams real-time updates:                                                                  |
 |                    |                          | - `/ws/orderbook`: Top 5 bid-ask orders.                                                    |
 |                    |                          | - `/ws/trades`: Realtime trade events.                                                      |
