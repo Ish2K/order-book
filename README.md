@@ -37,7 +37,7 @@ The application is broken down into microservices, each of which is responsible 
    - Provides real-time updates of order status, trade execution, and order book updates through WebSocket communication.
 
 5. **Reset Session** (`/orders/reset`)
-   - This is remove all the data from the database and prepare a fresh orderbook session
+   - This will remove all the data from the database and prepare a fresh orderbook session
 
 
 ## Design Decisions
