@@ -23,18 +23,20 @@ The application is broken down into microservices, each of which is responsible 
 ### Microservices Breakdown:
 
 `BASE_URL=localhost:8000`
+`WEBSOCKET_BASE_URL=ws://localhost:8000/ws`
 
-You can access `/docs` for Swagger UI
+You can access `/docs` for Swagger UI or just use the services from landing page at 
+`localhost:8000/` (Refer to the steps below to spin up the project) 
 
 1. **Order Microservice** (`/orders`): 
-   - Responsible for accepting, modifying, and canceling orders.
+   - Responsible for accepting (`/orders/place`), modifying(`/orders/modify`), and canceling orders (`/orders/cancel`).
    - Interfaces with MongoDB to store and retrieve orders.
    - It triggers the matching service to check if the orders can be matched.
   
 2. **Trade Microservice** (`/trades`):
    - Helps in fetching the trade history
 
-3. **Snapshot Microservice** (`/snapshots`):
+3. **Snapshot Microservice** (`/orders/order_book_snapshot`):
    - Provides snapshots of the current state of the order book and trade history.
    - It fetches the current state of the order book and recent trades from MongoDB.
 
@@ -78,7 +80,7 @@ You can access `/docs` for Swagger UI
    - The matched orders are updated with the traded quantity and price.
 
 3. **Order Book Snapshot**:
-   - Users can fetch the current order book using the `/snapshots` endpoint. This will return the top 5 bids and asks, sorted by price.
+   - Users can fetch the current order book using the `/orders/order_book_snapshot` endpoint. This will return the top 5 bids and asks, sorted by price.
 
 4. **Real-Time Updates**:
    - WebSockets push updates to the client regarding order status, trades, and order book changes.
